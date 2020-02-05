@@ -1,0 +1,12 @@
+
+.avatar{
+    width: 40px;
+    height: 40px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+.text-desc {
+    color: #999;
+
+}
