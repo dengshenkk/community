@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>首页 -社区</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <script src="/js/jQuery1.12.4.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/bootstrap-theme.css">
+  <link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+<div th:replace="~{nav.html :: navBar}"></div>
+<div class="container-fluid main">
+  <div class="row">
+    <div class="jumbotron">
+      <h3 class="h3">出错了~</h3>
+      <div>
+        <a class="btn btn-primary btn-lg" href="/" role="button">返回主页</a>
+        <p class="tips"></p>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+let time = 5
+setInterval(function () {
+  document.querySelector('.tips').innerText = time + '秒后自动返回主页'
+  if (time <= 0) {
+    location.href = '/'
+  }
+  time--
+}, 1000)
+</script>
+</body>
+</html>

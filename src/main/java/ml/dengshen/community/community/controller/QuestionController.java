@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class QuestionController {
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private QuestionService questionService;
 
