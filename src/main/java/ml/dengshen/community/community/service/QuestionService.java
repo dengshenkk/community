@@ -95,4 +95,15 @@ public class QuestionService {
 //            questionMapper.updateByExample(questionExample);
         }
     }
+
+    public void incView(Integer id) {
+        Question questionDB = questionMapper.selectByPrimaryKey(id);
+        if (questionDB != null) {
+            Question updateQuestion = new Question();
+            updateQuestion.setViewCount(questionDB.getViewCount() + 1);
+            QuestionExample questionExample = new QuestionExample();
+            questionExample.createCriteria().andIdEqualTo(id);
+            questionMapper.updateByExampleSelective(updateQuestion, questionExample);
+        }
+    }
 }
