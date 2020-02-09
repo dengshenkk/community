@@ -45,7 +45,7 @@ public class QuestionService {
         return questionDTOList;
     }
 
-    public List<QuestionDTO> listById(Integer id, Integer page, Integer size) {
+    public List<QuestionDTO> listById(Long id, Integer page, Integer size) {
         int offset = size * (page - 1);
         QuestionExample questionExample = new QuestionExample();
         questionExample.createCriteria()
@@ -67,7 +67,7 @@ public class QuestionService {
         return questionDTOList;
     }
 
-    public QuestionDTO getById(Integer id) {
+    public QuestionDTO getById(Long id) {
         Question question = questionMapper.selectByPrimaryKey(id);
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);
@@ -77,10 +77,12 @@ public class QuestionService {
     }
 
     public void createOrUpdate(Question question) {
+        // TODO: 发布问题后没有默认值 likeCount viewCount...
         if (question.getId() == null) {
             question.setGmtCreate(System.currentTimeMillis());
-            question.setGmtModify(System.currentTimeMillis());
-            questionMapper.insert(question);
+            question.setGmtModify(question.getGmtCreate());
+            question.setViewCount(1);
+            questionMapper.insertSelective(question);
         } else {
             question.setGmtModify(System.currentTimeMillis());
             Question question1 = new Question();
@@ -96,7 +98,7 @@ public class QuestionService {
         }
     }
 
-    public void incView(Integer id) {
+    public void incView(Long id) {
         Question questionDB = questionMapper.selectByPrimaryKey(id);
         if (questionDB != null) {
             Question updateQuestion = new Question();
