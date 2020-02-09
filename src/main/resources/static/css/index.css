@@ -55,6 +55,10 @@ textarea {
     padding: 10px 0;
     border-bottom: 1px solid #eee;
 }
+.sub-comment-list {
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
 
 .text-content {
     padding: 5px 10px;
@@ -67,6 +71,11 @@ textarea {
 }
 
 .text-desc .text-handle:hover {
+    color: red;
+    cursor: pointer;
+}
+
+.text-desc .text-handle:active {
     color: red;
     cursor: pointer;
 }

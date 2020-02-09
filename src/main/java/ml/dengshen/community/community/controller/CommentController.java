@@ -2,6 +2,7 @@ package ml.dengshen.community.community.controller;
 
 import ml.dengshen.community.community.dto.CommentDTO;
 import ml.dengshen.community.community.dto.ResultDTO;
+import ml.dengshen.community.community.enums.CommentTypeEnum;
 import ml.dengshen.community.community.mapper.CommentMapper;
 import ml.dengshen.community.community.model.Comment;
 import ml.dengshen.community.community.model.User;
@@ -49,7 +50,7 @@ public class CommentController {
     @GetMapping("/comment/{parentId}")
     @ResponseBody
     public ResultDTO getCommentList(@PathVariable("parentId") Long parentId) {
-        List<CommentDTO> commentList = commentService.getCommentListByParentId(parentId);
+        List<CommentDTO> commentList = commentService.listByTargetId(parentId, CommentTypeEnum.COMMENT);
         return ResultDTO.success(commentList);
     }
 

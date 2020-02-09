@@ -1,6 +1,7 @@
 package ml.dengshen.community.community.service;
 
 import ml.dengshen.community.community.dto.CommentDTO;
+import ml.dengshen.community.community.enums.CommentTypeEnum;
 import ml.dengshen.community.community.mapper.CommentMapper;
 import ml.dengshen.community.community.mapper.QuestionMapper;
 import ml.dengshen.community.community.mapper.UserMapper;
@@ -33,26 +34,36 @@ public class CommentService {
         if (comment.getParentId() == null || comment.getParentId() == 0) {
             throw new RuntimeException("该问题不存在,不能进行评论");
         }
-        Question question = questionMapper.selectByPrimaryKey(comment.getParentId());
-        if (question == null) {
-            throw new RuntimeException("该问题错误,不能进行评论");
+        if (comment.getType() == CommentTypeEnum.QUESTION.getType()) {
+            // 回复问题
+            Question question = questionMapper.selectByPrimaryKey(comment.getParentId());
+            if (question == null) {
+                throw new RuntimeException("该问题错误,不能进行评论");
+            }
+            question.setCommentCount(question.getCommentCount() + 1);
+            QuestionExample questionExample = new QuestionExample();
+            questionExample.createCriteria()
+                    .andIdEqualTo(comment.getParentId());
+            questionMapper.updateByExampleSelective(question, questionExample);
+        } else if (comment.getType() == CommentTypeEnum.COMMENT.getType()) {
+            // 回复评论
+            CommentExample commentExample = new CommentExample();
+            commentExample.createCriteria()
+                    .andParentIdEqualTo(comment.getParentId());
+            List<Comment> commentList = commentMapper.selectByExample(commentExample);
         }
+
         commentMapper.insert(comment);
-        question.setCommentCount(question.getCommentCount() + 1);
-        QuestionExample questionExample = new QuestionExample();
-        questionExample.createCriteria()
-                .andIdEqualTo(comment.getParentId());
-        questionMapper.updateByExampleSelective(question, questionExample);
+
     }
 
-    public List<CommentDTO> getCommentListByParentId(Long parentId) {
+    public List<CommentDTO> listByTargetId(Long parentId, CommentTypeEnum commentTypeEnum) {
         CommentExample commentExample = new CommentExample();
         commentExample.createCriteria()
                 .andParentIdEqualTo(parentId)
-                .andTypeEqualTo(1);
+                .andTypeEqualTo(commentTypeEnum.getType());
         commentExample.setOrderByClause("gmt_create desc");
         List<Comment> comments = commentMapper.selectByExample(commentExample);
-
         Set<Long> commentators = comments.stream().map(Comment::getCommentator).collect(Collectors.toSet());
         ArrayList<Long> userIds = new ArrayList<>();
         userIds.addAll(commentators);
