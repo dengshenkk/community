@@ -18,3 +18,67 @@ body {
 .tips {
     margin: 10px 0;
 }
+
+body {
+    background-color: #efefef;
+}
+
+.main {
+    margin: 10px 30px;
+    background-color: #fff;
+}
+
+.question-box {
+    min-height: 200px;
+    padding: 10px;
+}
+
+.edit {
+    padding: 20px 0;
+}
+
+.btn-publish {
+    float: right;
+    margin: 10px 0;
+}
+
+textarea {
+    resize: none;
+}
+
+
+.comment-box {
+    padding: 20px 0;
+}
+
+.comment-list {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.text-content {
+    padding: 5px 10px;
+    min-height: 50px;
+}
+
+
+.hr {
+    margin: 10px;
+}
+
+.text-desc .text-handle:hover {
+    color: red;
+    cursor: pointer;
+}
+
+
+.no-login {
+    margin: 20px 0;
+}
+
+.no-login div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+}

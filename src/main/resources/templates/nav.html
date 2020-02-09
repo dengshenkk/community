@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
+<script src="/js/index.js"></script>
 <nav th:fragment="navBar" class="navbar navbar-default">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -22,10 +23,10 @@
       <ul class="nav navbar-nav navbar-right">
         <li><a href="/publish">发布问题</a></li>
         <li th:if="${session.user == null}">
-          <a href="https://github.com/login/oauth/authorize?client_id=ad21b80d19204366718d&redirect_uri=http://localhost:8080/callback&scope=user&state=1111">登录</a></li>
+          <a id="loing" onclick="common.login()">登录</a></li>
         <li class="dropdown" th:if="${session.user != null}">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-            <span  th:text="${session.user.getName()}"></span>
+            <span th:text="${session.user.getName()}"></span>
             <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="/profile/questions">个人中心</a></li>

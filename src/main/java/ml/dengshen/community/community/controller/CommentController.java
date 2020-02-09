@@ -6,13 +6,13 @@ import ml.dengshen.community.community.mapper.CommentMapper;
 import ml.dengshen.community.community.model.Comment;
 import ml.dengshen.community.community.model.User;
 import ml.dengshen.community.community.service.CommentService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class CommentController {
@@ -29,7 +29,10 @@ public class CommentController {
                        HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
-            return ResultDTO.errorOf("未登录", 2000);
+            return ResultDTO.errorOf("登录失效, 请重新登录", 500);
+        }
+        if (StringUtils.isBlank(commentDTO.getContent())) {
+            throw new RuntimeException("评论内容不能为空");
         }
         Comment comment = new Comment();
         comment.setContent(commentDTO.getContent());
@@ -40,6 +43,14 @@ public class CommentController {
         comment.setCommentator(user.getId());
         comment.setLikeCount(1);
         commentService.insert(comment);
-        return null;
+        return ResultDTO.success("操作成功", 200, comment);
     }
+
+    @GetMapping("/comment/{parentId}")
+    @ResponseBody
+    public ResultDTO getCommentList(@PathVariable("parentId") Long parentId) {
+        List<CommentDTO> commentList = commentService.getCommentListByParentId(parentId);
+        return ResultDTO.success(commentList);
+    }
+
 }
