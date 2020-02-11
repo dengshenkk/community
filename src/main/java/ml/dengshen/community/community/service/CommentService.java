@@ -64,24 +64,27 @@ public class CommentService {
                 .andTypeEqualTo(commentTypeEnum.getType());
         commentExample.setOrderByClause("gmt_create desc");
         List<Comment> comments = commentMapper.selectByExample(commentExample);
-        Set<Long> commentators = comments.stream().map(Comment::getCommentator).collect(Collectors.toSet());
-        ArrayList<Long> userIds = new ArrayList<>();
-        userIds.addAll(commentators);
+        List<User> users;
+        List<CommentDTO> commentDTOList = null;
+        if (comments.size() > 0) {
+            Set<Long> commentators = comments.stream().map(Comment::getCommentator).collect(Collectors.toSet());
+            ArrayList<Long> userIds = new ArrayList<>();
+            userIds.addAll(commentators);
 
-        UserExample userExample = new UserExample();
-        userExample.createCriteria()
-                .andIdIn(userIds);
-        List<User> users = userMapper.selectByExample(userExample);
+            UserExample userExample = new UserExample();
+            userExample.createCriteria()
+                    .andIdIn(userIds);
+            users = userMapper.selectByExample(userExample);
 
-        Map<Long, User> userMap = users.stream().collect(Collectors.toMap(user -> user.getId(), user -> user));
+            Map<Long, User> userMap = users.stream().collect(Collectors.toMap(user -> user.getId(), user -> user));
 
-        List<CommentDTO> commentDTOList = comments.stream().map(comment -> {
-            CommentDTO commentDTO = new CommentDTO();
-            BeanUtils.copyProperties(comment, commentDTO);
-            commentDTO.setUser(userMap.get(comment.getCommentator()));
-            return commentDTO;
-        }).collect(Collectors.toList());
-        System.out.println(users);
+            commentDTOList = comments.stream().map(comment -> {
+                CommentDTO commentDTO = new CommentDTO();
+                BeanUtils.copyProperties(comment, commentDTO);
+                commentDTO.setUser(userMap.get(comment.getCommentator()));
+                return commentDTO;
+            }).collect(Collectors.toList());
+        }
         return commentDTOList;
     }
 }

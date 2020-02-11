@@ -30,10 +30,12 @@
             编辑
           </a>
         </div>
-
-        <h3 class="h3"><span th:text="${comments.size()}"></span> 个回复</h3>
+        <h3 class="h3">
+          <span th:if="${comments}" th:text="${comments.size()}"></span>
+          <span th:if="${comments == null}">0</span>
+          个回复</h3>
         <hr>
-        <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
+        <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12" th:if="${comments}">
           <div class="media comment-list" th:each="comment: ${comments}">
             <div class="media-left">
               <img class="media-object avatar" th:src="${comment.user.avatarUrl}">
@@ -67,51 +69,50 @@
           </div>
         </div>
       </div>
-    </div>
+      <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12 no-login" th:if="${session.user == null}">
+        <div class="bg-info">请 <a onclick="common.login()">登录</a>后进行评论</div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12" id="comment" th:if="${question.user != null}">
+        <div class="media comment-box">
+          <div class="media-left">
+            <img class="media-object avatar" th:src="${question.user.avatarUrl}" alt="">
+          </div>
+          <div class="media-body" style="vertical-align: middle">
+            <h4 class="media-heading" th:text="${question.user.name}"></h4>
+          </div>
+        </div>
+        <input type="hidden" id="comment_parentId" th:value="${question.id}">
+        <input type="hidden" id="comment_type" th:value="${1}">
+        <textarea class="form-control" id="comment_content" rows="6"></textarea>
+        <button class="btn btn-success btn-publish" onclick="commentObj.post()">回复</button>
+        <hr class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
 
-
-    <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12 no-login" th:if="${session.user == null}">
-      <div class="bg-info">请 <a onclick="common.login()">登录</a>后进行评论</div>
+      </div>
     </div>
-    <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12" id="comment" th:if="${session.user != null}">
-      <div class="media comment-box">
+    <div class="col-lg-3 col-md-12 col-xs-12 col-sm-12">
+
+      <h3 class="h3">发起人</h3>
+      <div class="media">
         <div class="media-left">
-          <img class="media-object avatar" th:src="${question.user.avatarUrl}" alt="">
+          <img class="media-object avatar" th:src="${question.user.avatarUrl}">
         </div>
-        <div class="media-body" style="vertical-align: middle">
-          <h4 class="media-heading" th:text="${question.user.name}"></h4>
+        <div class="media-body">
+          <h4 class="media-heading">
+            <span th:text="${question.user.name}"></span>
+          </h4>
+          <!--<span class="text-desc">-->
+          <!--<span th:text="${question.commentCount}"></span>个回复  &nbsp;&nbsp;&nbsp;&nbsp;-->
+          <!--<span th:text="${question.likeCount}"></span>个关注  &nbsp;&nbsp;&nbsp;&nbsp;-->
+          <!--<span th:text="${question.viewCount}"></span>个浏览  &nbsp;&nbsp;&nbsp;&nbsp;-->
+          <!--<span th:text="${#dates.format(question.gmtCreate, 'yyyy-MM-dd HH:mm:ss')}"></span>发布-->
+          <!--</span>-->
         </div>
       </div>
-      <input type="hidden" id="comment_parentId" th:value="${question.id}">
-      <input type="hidden" id="comment_type" th:value="${1}">
-      <textarea class="form-control" id="comment_content" rows="6"></textarea>
-      <button class="btn btn-success btn-publish" onclick="commentObj.post()">回复</button>
-      <hr class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
+      <h3>相关问题</h3>
 
     </div>
   </div>
-  <div class="col-lg-3 col-md-12 col-xs-12 col-sm-12">
 
-    <h3 class="h3">发起人</h3>
-    <div class="media">
-      <div class="media-left">
-        <img class="media-object avatar" th:src="${question.user.avatarUrl}">
-      </div>
-      <div class="media-body">
-        <h4 class="media-heading">
-          <span th:text="${question.user.name}"></span>
-        </h4>
-        <!--<span class="text-desc">-->
-        <!--<span th:text="${question.commentCount}"></span>个回复  &nbsp;&nbsp;&nbsp;&nbsp;-->
-        <!--<span th:text="${question.likeCount}"></span>个关注  &nbsp;&nbsp;&nbsp;&nbsp;-->
-        <!--<span th:text="${question.viewCount}"></span>个浏览  &nbsp;&nbsp;&nbsp;&nbsp;-->
-        <!--<span th:text="${#dates.format(question.gmtCreate, 'yyyy-MM-dd HH:mm:ss')}"></span>发布-->
-        <!--</span>-->
-      </div>
-    </div>
-    <h3>相关问题</h3>
-
-  </div>
 </div>
 </body>
 </html>
