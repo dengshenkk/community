@@ -2,7 +2,10 @@ package ml.dengshen.community.community.service;
 
 import ml.dengshen.community.community.dto.CommentDTO;
 import ml.dengshen.community.community.enums.CommentTypeEnum;
+import ml.dengshen.community.community.enums.NotifyStatusEnum;
+import ml.dengshen.community.community.enums.NotifyTypeEnum;
 import ml.dengshen.community.community.mapper.CommentMapper;
+import ml.dengshen.community.community.mapper.NotifyMapper;
 import ml.dengshen.community.community.mapper.QuestionMapper;
 import ml.dengshen.community.community.mapper.UserMapper;
 import ml.dengshen.community.community.model.*;
@@ -28,6 +31,12 @@ public class CommentService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private NotifyService notifyService;
+
+    @Autowired
+    private NotifyMapper notifyMapper;
+
     @Transactional
     public void insert(Comment comment) {
 
@@ -45,16 +54,35 @@ public class CommentService {
             questionExample.createCriteria()
                     .andIdEqualTo(comment.getParentId());
             questionMapper.updateByExampleSelective(question, questionExample);
+            createNotify(comment, question.getCreator(), NotifyTypeEnum.REPLY_QUESTION);
         } else if (comment.getType() == CommentTypeEnum.COMMENT.getType()) {
             // 回复评论
-            CommentExample commentExample = new CommentExample();
-            commentExample.createCriteria()
-                    .andParentIdEqualTo(comment.getParentId());
-            List<Comment> commentList = commentMapper.selectByExample(commentExample);
+            Comment commentDB = commentMapper.selectByPrimaryKey(comment.getParentId());
+            createNotify(comment, commentDB.getCommentator(), NotifyTypeEnum.REPLY_COMMENT);
+
         }
 
         commentMapper.insert(comment);
 
+    }
+
+    private void createNotify(Comment comment, Long commentator, NotifyTypeEnum notifyTypeEnum) {
+        // 通知
+        Notify notify = new Notify();
+        notify.setGmtCreate(System.currentTimeMillis());
+        // 回复的对象id
+        notify.setOuterid(comment.getParentId());
+        // 评论者
+        notify.setNotifier(comment.getCommentator());
+
+        notify.setStatus(NotifyStatusEnum.UNREAD.getStatus());
+
+        notify.setType(notifyTypeEnum.getType());
+
+        // 通知父评论的创建人
+        notify.setReceiver(commentator);
+
+        notifyMapper.insert(notify);
     }
 
     public List<CommentDTO> listByTargetId(Long parentId, CommentTypeEnum commentTypeEnum) {
