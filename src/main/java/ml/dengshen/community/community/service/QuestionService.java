@@ -28,8 +28,9 @@ public class QuestionService {
         int offset = size * (page - 1);
         PageHelper.startPage(offset, size);
 //        List<Question> questions = questionMapper.list(offset, size);
-        System.out.println("-------------------");
-        List<Question> questions = questionMapper.selectByExample(new QuestionExample());
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.setOrderByClause("gmt_create desc");
+        List<Question> questions = questionMapper.selectByExample(questionExample);
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questions) {
             User user = userMapper.selectByPrimaryKey(question.getCreator());
