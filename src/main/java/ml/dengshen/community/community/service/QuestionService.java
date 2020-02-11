@@ -3,6 +3,7 @@ package ml.dengshen.community.community.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import ml.dengshen.community.community.dto.QuestionDTO;
+import ml.dengshen.community.community.mapper.QuestionExtMapper;
 import ml.dengshen.community.community.mapper.QuestionMapper;
 import ml.dengshen.community.community.mapper.UserMapper;
 import ml.dengshen.community.community.model.Question;
@@ -19,6 +20,9 @@ import java.util.List;
 public class QuestionService {
     @Autowired
     private QuestionMapper questionMapper;
+
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
 
     @Autowired
     private UserMapper userMapper;
@@ -108,5 +112,16 @@ public class QuestionService {
             questionExample.createCriteria().andIdEqualTo(id);
             questionMapper.updateByExampleSelective(updateQuestion, questionExample);
         }
+    }
+
+    public List<Question> selectRelate(QuestionDTO questionDTO) {
+        QuestionDTO questionDTO1 = new QuestionDTO();
+        BeanUtils.copyProperties(questionDTO,questionDTO1);
+        QuestionExample questionExample = new QuestionExample();
+        String tags = questionDTO1.getTag().replace(",", "|");
+        questionDTO1.setTag(tags);
+        questionExample.createCriteria();
+        List<Question> questionList = questionExtMapper.selectRelateQuestion(questionDTO1);
+        return questionList;
     }
 }

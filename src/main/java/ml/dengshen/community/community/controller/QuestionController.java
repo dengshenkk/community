@@ -3,6 +3,7 @@ package ml.dengshen.community.community.controller;
 import ml.dengshen.community.community.dto.CommentDTO;
 import ml.dengshen.community.community.dto.QuestionDTO;
 import ml.dengshen.community.community.enums.CommentTypeEnum;
+import ml.dengshen.community.community.model.Question;
 import ml.dengshen.community.community.service.CommentService;
 import ml.dengshen.community.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,9 @@ public class QuestionController {
         QuestionDTO questionDTO = questionService.getById(id);
         questionService.incView(id);
         List<CommentDTO> commentList = commentService.listByTargetId(id, CommentTypeEnum.QUESTION);
+        List<Question> relateQuestion = questionService.selectRelate(questionDTO);
         model.addAttribute("question", questionDTO);
+        model.addAttribute("relatedQuestion", relateQuestion);
         model.addAttribute("comments", commentList);
         return "question";
 
