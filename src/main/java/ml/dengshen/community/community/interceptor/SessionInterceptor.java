@@ -3,6 +3,7 @@ package ml.dengshen.community.community.interceptor;
 import ml.dengshen.community.community.mapper.UserMapper;
 import ml.dengshen.community.community.model.User;
 import ml.dengshen.community.community.model.UserExample;
+import ml.dengshen.community.community.service.NotifyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -18,6 +19,10 @@ public class SessionInterceptor implements HandlerInterceptor {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private NotifyService notifyService;
+
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         User user = null;
@@ -32,6 +37,8 @@ public class SessionInterceptor implements HandlerInterceptor {
                     List<User> users = userMapper.selectByExample(userExample);
                     if (users.size() != 0) {
                         request.getSession().setAttribute("user", users.get(0));
+                        Long count = notifyService.unreadCount(users.get(0));
+                        request.getSession().setAttribute("messageCount", count);
                     }
                     break;
                 }

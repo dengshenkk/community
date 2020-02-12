@@ -9,6 +9,7 @@ public class NotifyDTO {
     private Long grmCreate;
     private Integer status;
     private User user;
+    private Long outerId;
     private String outerTitle;
     private String type;
 }

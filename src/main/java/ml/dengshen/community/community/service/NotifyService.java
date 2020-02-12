@@ -1,6 +1,5 @@
 package ml.dengshen.community.community.service;
 
-import com.github.pagehelper.PageHelper;
 import ml.dengshen.community.community.dto.NotifyDTO;
 import ml.dengshen.community.community.enums.NotifyTypeEnum;
 import ml.dengshen.community.community.mapper.CommentMapper;
@@ -26,10 +25,10 @@ public class NotifyService {
     private CommentMapper commentMapper;
 
 
-    public List<NotifyDTO> list(User user, Integer page, Integer size) {
+    public List<NotifyDTO> list(User user) {
 
-        int offset = size * (page - 1);
-        PageHelper.startPage(offset, size);
+//        int offset = size * (page - 1);
+//        PageHelper.startPage(offset, size);
         NotifyExample notifyExample = new NotifyExample();
         notifyExample.createCriteria()
                 .andReceiverEqualTo(user.getId());
@@ -41,18 +40,37 @@ public class NotifyService {
             notifyDTO.setGrmCreate(notify.getGmtCreate());
             notifyDTO.setId(notify.getId());
             if (notify.getType() == NotifyTypeEnum.REPLY_QUESTION.getType()) {
-                Question question = questionMapper.selectByPrimaryKey(notify.getOuterid());
+                Question question = questionMapper.selectByPrimaryKey(notify.getOuterId());
                 notifyDTO.setOuterTitle(question.getTitle());
             } else if (notify.getType() == NotifyTypeEnum.REPLY_COMMENT.getType()) {
-                Comment comment = commentMapper.selectByPrimaryKey(notify.getOuterid());
+                Comment comment = commentMapper.selectByPrimaryKey(notify.getOuterId());
                 notifyDTO.setOuterTitle(comment.getContent());
             }
             notifyDTO.setStatus(notify.getStatus());
             notifyDTO.setType(NotifyTypeEnum.typeOf(notify.getType()));
             notifyDTO.setUser(user);
+            notifyDTO.setOuterId(notify.getOuterId());
             notifyDTOList.add(notifyDTO);
         }
         return notifyDTOList;
 
+    }
+
+    public Notify read(Long id, User user) {
+        Notify notify = notifyMapper.selectByPrimaryKey(id);
+        if (notify.getReceiver() != user.getId()) {
+            throw new RuntimeException("兄弟,你怎么能偷看别人的信息呢?");
+        }
+        notify.setStatus(1);
+        notifyMapper.updateByPrimaryKey(notify);
+        return notify;
+    }
+
+    public Long unreadCount(User user) {
+        NotifyExample notifyExample = new NotifyExample();
+        notifyExample.createCriteria()
+                .andReceiverEqualTo(user.getId())
+                .andStatusEqualTo(0);
+        return notifyMapper.countByExample(notifyExample);
     }
 }

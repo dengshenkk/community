@@ -45,6 +45,7 @@ public class ProfileController {
             model.addAttribute("sectionName", "我关注的问题");
             List<QuestionDTO> questionDTOList = questionService.listById(user.getId(), page, size);
             model.addAttribute("questions", questionDTOList);
+
         }
         if ("record".equals(action)) {
             model.addAttribute("section", "record");
@@ -53,10 +54,11 @@ public class ProfileController {
         if ("replies".equals(action)) {
             model.addAttribute("section", "replies");
             model.addAttribute("sectionName", "最新回复");
-            List<NotifyDTO> notifyDTOS = notifyService.list(user, page, size);
+            List<NotifyDTO> notifyDTOS = notifyService.list(user);
             model.addAttribute("replies", notifyDTOS);
         }
-
+        Long count = notifyService.unreadCount(user);
+        model.addAttribute("messageCount", count);
 
 
         return "profile";

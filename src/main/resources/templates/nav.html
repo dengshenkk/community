@@ -20,8 +20,8 @@
         <button type="submit" class="btn btn-default">搜素</button>
       </form>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="/publish">发布问题</a></li>
-        <li><a href="/profile/replies"><span class="badge">3</span>通知</a></li>
+        <li th:if="${session.user != null}"><a href="/publish">发布问题</a></li>
+        <li th:if="${session.user != null && session.messageCount > 0}"><a href="/profile/replies"><span class="badge" th:text="${session.messageCount}"></span>通知</a></li>
         <li th:if="${session.user == null}">
           <a id="loing" href="https://github.com/login/oauth/authorize?client_id=ad21b80d19204366718d&redirect_uri=http://localhost:8080/callback&scope=user&state=1111">登录</a></li>
         <li class="dropdown" th:if="${session.user != null}">

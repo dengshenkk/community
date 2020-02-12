@@ -20,12 +20,12 @@
 </head>
 <body>
 <div th:replace="~{nav.html :: navBar}"></div>
-<div th:if="${session.user != null}">
-  <p th:text="'Hello, ' + ${session.user.getName()} + '!'"/>
-</div>
-<div th:if="${session.user == null}">
-  <p>Hello, 请登录</p>
-</div>
+<!--<div th:if="${session.user != null}">-->
+  <!--<p th:text="'Hello, ' + ${session.user.getName()} + '!'"/>-->
+<!--</div>-->
+<!--<div th:if="${session.user == null}">-->
+  <!--<p>Hello, 请登录</p>-->
+<!--</div>-->
 <div class="container-fluid main">
   <div class="row">
     <div class="col-lg-9 col-md-12 col-xs-12 col-sm-12">

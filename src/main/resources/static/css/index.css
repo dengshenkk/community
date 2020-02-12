@@ -8,6 +8,15 @@ body {
     background-color: #fff;
 }
 
+.row {
+    padding: 20px;
+}
+
+.badge {
+    background-color: red !important;
+    color: #fff !important;
+}
+
 .avatar {
     width: 40px;
     height: 40px;
@@ -107,4 +116,9 @@ textarea {
     align-items: center;
     justify-content: center;
     height: 40px;
+}
+
+
+.replies {
+    padding: 8px 0;
 }

@@ -41,7 +41,7 @@
           个回复</h3>
         <hr>
         <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12" th:if="${comments}">
-          <div class="media comment-list" th:each="comment: ${comments}">
+          <div class="media comment-list" th:each="comment: ${comments}" th:id="${'comment_'+ comment.id}">
             <div class="media-left">
               <img class="media-object avatar" th:src="${comment.user.avatarUrl}">
             </div>
@@ -77,8 +77,8 @@
       <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12 no-login" th:if="${session.user == null}">
         <div class="bg-info">请 <a onclick="common.login()">登录</a>后进行评论</div>
       </div>
-      <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12" id="comment" th:if="${question.user != null}">
-        <div class="media comment-box">
+      <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12" id="comment" th:if="${session.user != null}">
+        <div class="media comment-box" id="comment_box">
           <div class="media-left">
             <img class="media-object avatar" th:src="${question.user.avatarUrl}" alt="">
           </div>

@@ -71,7 +71,7 @@ public class CommentService {
         Notify notify = new Notify();
         notify.setGmtCreate(System.currentTimeMillis());
         // 回复的对象id
-        notify.setOuterid(comment.getParentId());
+        notify.setOuterId(comment.getParentId());
         // 评论者
         notify.setNotifier(comment.getCommentator());
 

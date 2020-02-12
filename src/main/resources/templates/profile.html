@@ -11,12 +11,7 @@
 </head>
 <body>
 <div th:replace="~{nav.html :: navBar}"></div>
-<div th:if="${session.user != null}">
-  <p th:text="'Hello, ' + ${session.user.getName()} + '!'"/>
-</div>
-<div th:if="${session.user == null}">
-  <p>Hello, 请登录</p>
-</div>
+
 <div class="container-fluid main">
   <div class="row">
     <div class="col-lg-9 col-md-12 col-xs-12 col-sm-12">
@@ -64,13 +59,14 @@
 
       <!--最新消息-->
       <div class="col-lg-9 col-md-12 col-xs-12 col-sm-12" th:if="${section == 'replies'}">
-        <div class="media" th:each="replie: ${replies}">
+        <div class="media replies" th:each="replie: ${replies}">
 
           <div class="media-body">
             <span class="text-desc">
               <a href="" th:text="${replie.user.name}"></a>
               <span th:text="${replie.type}"></span>
-              <a href="" th:text="${replie.outerTitle}"></a>
+              <a th:href="@{'~/notify/'+${replie.id}}" th:text="${replie.outerTitle}"></a>
+              <span class="label label-danger" th:if="${replie.status == 0}">未读</span>
           </span>
           </div>
         </div>
@@ -85,7 +81,7 @@
         </a>
         <a href="/profile/replies" class="list-group-item" th:classappend="${section == 'replies'? 'active': ''}">
           最新回复
-          <span class="badge" th:text="${replies.size()}"></span>
+          <span class="badge" th:text="${messageCount}"></span>
         </a>
       </div>
       <div class="page-header">

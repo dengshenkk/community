@@ -34,6 +34,7 @@ public class AuthorizeController {
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code") String code,
                            @RequestParam(name = "state") String state,
+                           @RequestParam(name = "pathname") String pathname,
                            HttpServletResponse response) {
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_id(clientId);
@@ -54,8 +55,8 @@ public class AuthorizeController {
             user.setAccountId(String.valueOf(githubUser.getId()));
             user.setAvatarUrl(githubUser.getAvatarUrl());
             userService.createOrUpdate(user);
-            response.addCookie(new Cookie("token",token));
-            return "redirect:/";
+            response.addCookie(new Cookie("token", token));
+            return "redirect:" + pathname+"?#comment";
         } else {
             // 登录失败
             return "redirect:/";
