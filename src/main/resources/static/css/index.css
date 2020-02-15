@@ -39,7 +39,6 @@ body {
 }
 
 .main {
-    margin: 10px 30px;
     background-color: #fff;
 }
 
@@ -53,7 +52,6 @@ body {
 }
 
 .btn-publish {
-    float: right;
     margin: 10px 0;
 }
 

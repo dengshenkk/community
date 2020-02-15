@@ -3,7 +3,9 @@ let commentObj = {
     let questionId = $('#comment_parentId').val()
     let content = $('#comment_content').val()
     this.comment2target(questionId, 1, content)
-    location.reload()
+    setTimeout(() => {
+      location.reload()
+    }, 1000)
   },
   subComment: function (e) {
     console.log(e)
