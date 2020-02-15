@@ -33,4 +33,19 @@
         WHERE id != #{id}
           AND tag REGEXP #{tag}
     </select>
+
+    <select id="selectSearch" parameterType="ml.dengshen.community.community.dto.SearchQuestionDTO" resultMap="ResultMapWithBLOBs">
+        SELECT * FROM t_question
+        /**
+        SELECT *
+        FROM t_question
+        WHERE tag REGEXP tag
+        OR 'springBoot|java';
+         */
+        <where>
+            <if test="search != null">
+                and title REGEXP #{search}
+            </if>
+        </where>
+    </select>
 </mapper>

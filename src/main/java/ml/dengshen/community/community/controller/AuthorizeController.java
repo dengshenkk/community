@@ -5,6 +5,7 @@ import ml.dengshen.community.community.dto.GithubUser;
 import ml.dengshen.community.community.model.User;
 import ml.dengshen.community.community.provider.GithubProvider;
 import ml.dengshen.community.community.service.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -34,7 +35,7 @@ public class AuthorizeController {
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code") String code,
                            @RequestParam(name = "state") String state,
-                           @RequestParam(name = "pathname") String pathname,
+                           @RequestParam(name = "pathname", required = false) String pathname,
                            HttpServletResponse response) {
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_id(clientId);
@@ -56,7 +57,11 @@ public class AuthorizeController {
             user.setAvatarUrl(githubUser.getAvatarUrl());
             userService.createOrUpdate(user);
             response.addCookie(new Cookie("token", token));
-            return "redirect:" + pathname+"?#comment";
+            if (StringUtils.isBlank(pathname)) {
+                return "redirect:/";
+            } else {
+                return "redirect:" + pathname + "?#comment";
+            }
         } else {
             // 登录失败
             return "redirect:/";

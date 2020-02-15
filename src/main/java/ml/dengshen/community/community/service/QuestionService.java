@@ -2,6 +2,7 @@ package ml.dengshen.community.community.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import ml.dengshen.community.community.dto.PageDTO;
 import ml.dengshen.community.community.dto.QuestionDTO;
 import ml.dengshen.community.community.mapper.QuestionExtMapper;
 import ml.dengshen.community.community.mapper.QuestionMapper;
@@ -28,17 +29,17 @@ public class QuestionService {
     private UserMapper userMapper;
 
 
-    public List<QuestionDTO> list(Integer page, Integer size) {
+    public PageDTO list(String search, Integer page, Integer size) {
         int offset = size * (page - 1);
-        PageHelper.startPage(offset, size);
-//        List<Question> questions = questionMapper.list(offset, size);
+        PageHelper.offsetPage(offset, size);
+        System.out.println("page: " + offset);
+        System.out.println("size: " + size);
         QuestionExample questionExample = new QuestionExample();
         questionExample.setOrderByClause("gmt_create desc");
-        List<Question> questions = questionMapper.selectByExample(questionExample);
+        List<Question> questions = questionExtMapper.selectSearch(search, page, size);
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questions) {
             User user = userMapper.selectByPrimaryKey(question.getCreator());
-//            User user = userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
             questionDTO.setUser(user);
@@ -47,7 +48,13 @@ public class QuestionService {
 
         PageInfo pageInfo = new PageInfo<>(questions);
         System.out.println("总数：" + pageInfo.getTotal());
-        return questionDTOList;
+        System.out.println("总页数：" + pageInfo.getPages());
+        PageDTO<Object> pageDTO = new PageDTO<>();
+        pageDTO.setData(questionDTOList);
+        pageDTO.setPage(page);
+        pageDTO.setSize(size);
+        pageDTO.setTotalPage(pageInfo.getPages());
+        return pageDTO;
     }
 
     public List<QuestionDTO> listById(Long id, Integer page, Integer size) {
@@ -57,7 +64,6 @@ public class QuestionService {
                 .andCreatorEqualTo(id);
         PageHelper.offsetPage(offset, size);
         List<Question> questions = questionMapper.selectByExample(questionExample);
-//        List<Question> questions = questionMapper.listById(id, offset, size);
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         for (Question question : questions) {
             User user = userMapper.selectByPrimaryKey(question.getCreator());
@@ -116,12 +122,19 @@ public class QuestionService {
 
     public List<Question> selectRelate(QuestionDTO questionDTO) {
         QuestionDTO questionDTO1 = new QuestionDTO();
-        BeanUtils.copyProperties(questionDTO,questionDTO1);
+        BeanUtils.copyProperties(questionDTO, questionDTO1);
         QuestionExample questionExample = new QuestionExample();
         String tags = questionDTO1.getTag().replace(",", "|");
         questionDTO1.setTag(tags);
         questionExample.createCriteria();
         List<Question> questionList = questionExtMapper.selectRelateQuestion(questionDTO1);
+        return questionList;
+    }
+
+    public List<Question> hotList() {
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.setOrderByClause("comment_count desc limit 0, 5");
+        List<Question> questionList = questionMapper.selectByExample(questionExample);
         return questionList;
     }
 }

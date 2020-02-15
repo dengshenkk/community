@@ -1,7 +1,8 @@
 package ml.dengshen.community.community.controller;
 
-import ml.dengshen.community.community.dto.QuestionDTO;
+import ml.dengshen.community.community.dto.PageDTO;
 import ml.dengshen.community.community.mapper.UserMapper;
+import ml.dengshen.community.community.model.Question;
 import ml.dengshen.community.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,9 +23,14 @@ public class IndexController {
     @GetMapping("/")
     public String index(Model model,
                         @RequestParam(name = "page", defaultValue = "1") Integer page,
-                        @RequestParam(value = "size", defaultValue = "5") Integer size) {
-        List<QuestionDTO> questionList = questionService.list(page, size);
-        model.addAttribute("questions", questionList);
+                        @RequestParam(value = "size", defaultValue = "5") Integer size,
+                        @RequestParam(value = "search", required = false) String search) {
+
+        PageDTO questionPageDTO = questionService.list(search, page, size);
+        List<Question> questionHotList = questionService.hotList();
+        model.addAttribute("questionPageDTO", questionPageDTO);
+        model.addAttribute("questionHotList", questionHotList);
+        model.addAttribute("search", search);
         return "index";
     }
 

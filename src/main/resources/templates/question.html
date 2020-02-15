@@ -78,7 +78,7 @@
                   <div class="comment-box"></div>
 
                   <div class="clearfix">
-                    <input type="text" class="form-control" placeholder="评论一下..." th:id="'input-'+${comment.id}">
+                    <input type="text" class="form-control" autocomplete="off" placeholder="评论一下..." th:id="'input-'+${comment.id}">
                     <button class="btn btn-success btn-publish pull-right" onclick="commentObj.subComment(this)" th:data-input="${comment.id}">评论</button>
                   </div>
                 </div>

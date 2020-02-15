@@ -21,10 +21,10 @@
 <body>
 <div th:replace="~{nav.html :: navBar}"></div>
 <!--<div th:if="${session.user != null}">-->
-  <!--<p th:text="'Hello, ' + ${session.user.getName()} + '!'"/>-->
+<!--<p th:text="'Hello, ' + ${session.user.getName()} + '!'"/>-->
 <!--</div>-->
 <!--<div th:if="${session.user == null}">-->
-  <!--<p>Hello, 请登录</p>-->
+<!--<p>Hello, 请登录</p>-->
 <!--</div>-->
 <div class="container-fluid main">
   <div class="row">
@@ -34,7 +34,7 @@
           发现
         </h3>
       </div>
-      <div class="media" th:each="question: ${questions}">
+      <div class="media" th:each="question: ${questionPageDTO.data}">
         <div class="media-left">
           <a th:href="'profile/question/'+${question.getId()}">
             <img class="media-object avatar" th:src="${question.user.avatarUrl}">
@@ -55,17 +55,24 @@
       <nav aria-label="Page navigation">
         <ul class="pagination">
           <li>
-            <a href="/?page=1&size=5" aria-label="Previous">
+            <a th:href="@{${search != null ? '?search='+ search+'&': '?'} + 'page=1' + '&size='+${questionPageDTO.size}}"
+               aria-label="Previous">
               <span aria-hidden="true">&laquo;</span>
             </a>
           </li>
-          <li class="active"><a href="/?page=1&size=5">1</a></li>
-          <li><a href="/?page=2&size=5">2</a></li>
-          <li><a href="/?page=3&size=5">3</a></li>
-          <li><a href="/?page=4&size=5">4</a></li>
-          <li><a href="/?page=5&size=5">5</a></li>
+          <!--<li class="active" th:each="page: questionPageDTO.totalPage" >-->
+          <li th:each="page: ${#numbers.sequence(1, questionPageDTO.totalPage)}"
+              th:class="${page == questionPageDTO.page ? 'active' : ''}">
+            <a th:text="${page}"
+               th:href="@{${search != null ? '?search='+ search+'&': '?'} + 'page='+${page} + '&size='+${questionPageDTO.size}}"></a>
+          </li>
+          <!--<li th:each="page: ${questionPageDTO.totalPage}">-->
+          <!--<span th:text="${page}"></span>-->
+          <!--&lt;!&ndash;<a th:href="@{'/?search+'${search}'&page='${page}'&size=5'}"></a>&ndash;&gt;-->
+          <!--</li>-->
           <li>
-            <a href="#" aria-label="Next">
+            <a th:href="@{${search != null ? '?search='+ search+'&': '?'} + 'page='+${questionPageDTO.totalPage} + '&size='+${questionPageDTO.size}}"
+               aria-label="Next">
               <span aria-hidden="true">&raquo;</span>
             </a>
           </li>
@@ -75,6 +82,16 @@
     <div class="col-lg-3 col-md-12 col-xs-12 col-sm-12">
       <div class="page-header">
         <h3 class="h3">热门话题</h3>
+      </div>
+      <div>
+        <ul class="list-group">
+          <li class="list-group-item" th:each="hotItmem, stat: ${questionHotList}">
+            <a th:href="@{'question/'+${hotItmem.id}}"
+               th:text="${hotItmem.title}">
+            </a>
+            <span class="badge" th:text="${stat.count}"></span>
+          </li>
+        </ul>
       </div>
 
     </div>
