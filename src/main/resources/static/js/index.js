@@ -32,7 +32,7 @@ let commentObj = {
       success: function (result) {
         if (result.code !== 200) {
           window.confirm(result.message)
-          window.open('https://github.com/login/oauth/authorize?client_id=ad21b80d19204366718d&redirect_uri=http://localhost:8080/callback&scope=user&state=1111')
+          window.open('https://github.com/login/oauth/authorize?client_id=ad21b80d19204366718d&redirect_uri=http://35.194.143.26/callback&scope=user&state=1111')
           localStorage.setItem('closable', true)
           return
         }
@@ -84,7 +84,7 @@ let questionObj = {
 let common = {
   login: function () {
 
-    location.href = 'https://github.com/login/oauth/authorize?client_id=ad21b80d19204366718d&redirect_uri=http://localhost:8080/callback?pathname=' + location.pathname + '&scope=user&state=1111'
+    location.href = 'https://github.com/login/oauth/authorize?client_id=ad21b80d19204366718d&redirect_uri=http://35.194.143.26/callback?pathname=' + location.pathname + '&scope=user&state=1111'
   }
 }
 
