@@ -22,8 +22,10 @@
       <ul class="nav navbar-nav navbar-right">
         <li th:if="${session.user != null}"><a href="/publish">发布问题</a></li>
         <li th:if="${session.user != null && session.messageCount > 0}"><a href="/profile/replies"><span class="badge" th:text="${session.messageCount}"></span>通知</a></li>
+        <li  style="display: none">
+          <a id="login" th:href="@{'https://github.com/login/oauth/authorize?client_id=ad21b80d19204366718d&redirect_uri='+${redirectURI}+'&scope=user&state=1111'}">登录</a></li>
         <li th:if="${session.user == null}">
-          <a id="loing" href="https://github.com/login/oauth/authorize?client_id=ad21b80d19204366718d&redirect_uri=http://localhost:8080/callback&scope=user&state=1111">登录</a></li>
+          <a th:href="@{'https://github.com/login/oauth/authorize?client_id=ad21b80d19204366718d&redirect_uri='+${redirectURI}+'&scope=user&state=1111'}">登录</a></li>
         <li class="dropdown" th:if="${session.user != null}">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
             <span th:text="${session.user.getName()}"></span>
